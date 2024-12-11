@@ -144,7 +144,8 @@ export class GraphManager {
 		if (!limitedNeighbors) seed = 0;
 
 		// Update URL hash (refactor this out?)
-		const hash = `#${seed},${direction === "down" ? "0" : "1"},${this.labels[currentNode]}`;
+		const encoded = encodeURIComponent(this.labels[currentNode]);
+		const hash = `#${seed},${direction === "down" ? "0" : "1"},${encoded}`;
 		window.location.hash = hash;
 	}
 

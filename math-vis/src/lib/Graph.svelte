@@ -48,7 +48,8 @@
 		if (hashParts.length === 3) {
 			const seed = parseInt(hashParts[0]);
 			const direction = hashParts[1] === "1" ? "up" : "down";
-			const currentNode = labels.indexOf(hashParts[2]); // Use lookup to speed up?
+			const decoded = decodeURIComponent(hashParts[2]);
+			const currentNode = labels.indexOf(decoded); // Use lookup to speed up?
 			if (currentNode !== -1) {
 				updateSubGraph(currentNode, direction, seed);
 				updated = true;
