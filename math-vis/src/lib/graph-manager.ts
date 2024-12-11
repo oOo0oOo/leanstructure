@@ -57,6 +57,11 @@ export class GraphManager {
 			size = this.nodeState[node] === 2 ? 6 : 8;
 		}
 
+		// Adjust size for mobile devices
+		if (window.innerWidth <= 768) {
+			size *= 0.6;
+		}
+
 		this.subGraph.addNode(node, {
 			label: this.labels[node],
 			size: size,

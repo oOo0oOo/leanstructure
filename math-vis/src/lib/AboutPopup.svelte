@@ -65,6 +65,8 @@
 		padding: 0px;
 		border-radius: 5px;
 		width: 90%;
+		max-height: 90vh;
+		overflow-y: auto;
 		max-width: 650px;
 		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 		position: relative;
