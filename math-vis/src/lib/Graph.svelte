@@ -15,12 +15,13 @@
 	let tooltipNode = -1;
 	let tooltipNodeNumNeighbors = [0, 0];
 	let camera: any;
-	let lastHash = "---";
+	let layout: FA2Layout;
+	let layoutTimeout: number | undefined;
 
 	onMount(() => {
 		import("sigma").then(({ default: Sigma }) => {
 			const graph = graphManager.getSubGraph();
-			new FA2Layout(graph, { settings: { gravity: 0.1 } }).start();
+			layout = new FA2Layout(graph, { settings: { gravity: 0.1 } });
 			const renderer = new Sigma(graph, container);
 			camera = renderer.getCamera();
 
@@ -33,8 +34,6 @@
 			// On page load and hashchange
 			handleHashChange();
 			window.addEventListener("hashchange", handleHashChange);
-
-			zoomOut();
 		});
 	});
 
@@ -44,10 +43,6 @@
 
 	function handleHashChange() {
 		const hash = window.location.hash;
-		if (hash === lastHash) {
-			console.log("no change");
-			return;
-		}
 		const hashParts = hash.substring(1).split(",");
 		let updated = false;
 		if (hashParts.length === 3) {
@@ -61,7 +56,7 @@
 		}
 
 		if (!updated) {
-			updateSubGraphRandom();
+			updateSubGraph(-1, "down");
 		}
 	}
 
@@ -89,19 +84,22 @@
 		tooltipVisible = false;
 	}
 
-	function zoomOut() {
-		camera.animate({ ratio: 2 }, { duration: 700 });
-		tooltipVisible = false;
-	}
-
 	export function updateSubGraph(node: number, direction: "up" | "down", seed: number = -1) {
 		graphManager.updateSubGraph(node, direction, seed);
-		zoomOut();
-	}
+		camera.animate({ ratio: 2 }, { duration: 700 }); // Zoom out
+		tooltipVisible = false;
 
-	export function updateSubGraphRandom() {
-		graphManager.updateSubGraphRandom();
-		zoomOut();
+		// Start or continue layout until timeOut
+		if (layoutTimeout) {
+			clearTimeout(layoutTimeout);
+		} else {
+			layout.start();
+		}
+
+		layoutTimeout = setTimeout(() => {
+			layout.stop();
+			layoutTimeout = undefined;
+		}, 3000);
 	}
 </script>
 

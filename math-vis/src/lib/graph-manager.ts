@@ -73,6 +73,14 @@ export class GraphManager {
 
 	updateSubGraph(currentNode: number, direction: "up" | "down", seed: number = -1) {
 		// A BFS up/down the dependency graph
+
+		// Randomize current node
+		if (currentNode === -1) {
+			do {
+				currentNode = Math.floor(Math.random() * this.sizeGraph);
+			} while (this.premises[currentNode].length < MIN_NEIGHBORS_RANDOM);
+		}
+
 		this.currentNode = currentNode;
 		this.currentDirection = direction;
 
@@ -138,14 +146,6 @@ export class GraphManager {
 		// Update URL hash (refactor this out?)
 		const hash = `#${seed},${direction === "down" ? "0" : "1"},${this.labels[currentNode]}`;
 		window.location.hash = hash;
-	}
-
-	updateSubGraphRandom() {
-		let node;
-		do {
-			node = Math.floor(Math.random() * this.sizeGraph);
-		} while (this.premises[node].length < MIN_NEIGHBORS_RANDOM);
-		this.updateSubGraph(node, "down");
 	}
 
 	removeNodeFromSubGraph(node: number) {

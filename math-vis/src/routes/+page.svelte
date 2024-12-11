@@ -42,7 +42,7 @@
 	}
 
 	function handleRandomize() {
-		graphComponent.updateSubGraphRandom();
+		graphComponent.updateSubGraph(-1, "down");
 	}
 
 	function openAbout() {
