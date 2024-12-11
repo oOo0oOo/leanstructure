@@ -23,6 +23,10 @@
 		for (let i = 0; i < graphData["types"].length; i++) {
 			const name = graphData["types"][i].map((index: number) => tokens[index]).join(".");
 			labels.push(name);
+			// We require this for the url hash
+			// if (name.includes(",")) {
+			// 	console.log(name);
+			// }
 		}
 
 		const totPremises = premises.reduce((acc, val) => acc + val.length, 0);

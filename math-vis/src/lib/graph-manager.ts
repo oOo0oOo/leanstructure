@@ -7,6 +7,7 @@ import {
 	MAX_NEIGHBORS_PER_SEARCH,
 	MIN_NEIGHBORS_RANDOM
 } from "$lib/config";
+import { SeedableRandom } from "$lib/SeedableRandom";
 
 export class GraphManager {
 	private subGraph: DirectedGraph;
@@ -17,6 +18,7 @@ export class GraphManager {
 	private nodeState: number[];
 	private currentNode: number = -1;
 	private currentDirection: "up" | "down" = "down";
+	private random: SeedableRandom = new SeedableRandom(0);
 
 	constructor(labels: string[], premises: number[][]) {
 		this.subGraph = new DirectedGraph();
@@ -36,8 +38,6 @@ export class GraphManager {
 			const hasRevPremises = this.revPremises[i].length > 0;
 			return hasPremises && hasRevPremises ? 0 : hasPremises ? 1 : 2;
 		});
-
-		this.updateSubGraphRandom();
 	}
 
 	getNodeStates(): number[] {
@@ -71,10 +71,18 @@ export class GraphManager {
 		});
 	}
 
-	updateSubGraph(currentNode: number, direction: "up" | "down") {
+	updateSubGraph(currentNode: number, direction: "up" | "down", seed: number = -1) {
 		// A BFS up/down the dependency graph
 		this.currentNode = currentNode;
 		this.currentDirection = direction;
+
+		// Randomize seed
+		// Random is used during neighbor sampling
+		if (seed === -1) {
+			seed = Math.floor(Math.random() * 100000);
+		}
+
+		this.random.setSeed(seed);
 
 		this.subGraph.clear(); // A fresh start
 		this.addNodeToSubGraph(currentNode, true);
@@ -84,6 +92,8 @@ export class GraphManager {
 		const visited = new Set<number>();
 		const queue: number[] = [currentNode];
 		let addedNodes = 1;
+
+		let limitedNeighbors = false;
 
 		while (queue.length && addedNodes < MAX_NODES_PER_SEARCH) {
 			const node = queue.shift();
@@ -98,8 +108,9 @@ export class GraphManager {
 			const limit = addedNodes === 1 ? MAX_NEIGHBORS_PER_SEARCH_FIRST : MAX_NEIGHBORS_PER_SEARCH;
 
 			if (allNeighbors.length > limit) {
+				limitedNeighbors = true;
 				while (neighbors.size < Math.min(limit, allNeighbors.length)) {
-					const randomNeighbor = allNeighbors[Math.floor(Math.random() * allNeighbors.length)];
+					const randomNeighbor = allNeighbors[Math.floor(this.random.next() * allNeighbors.length)];
 					neighbors.add(randomNeighbor);
 				}
 			} else {
@@ -121,6 +132,12 @@ export class GraphManager {
 				}
 			}
 		}
+		// The seed is irrelevant if we didn't have to sample neighbors
+		if (!limitedNeighbors) seed = 0;
+
+		// Update URL hash (refactor this out?)
+		const hash = `#${seed},${direction === "down" ? "0" : "1"},${this.labels[currentNode]}`;
+		window.location.hash = hash;
 	}
 
 	updateSubGraphRandom() {

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { onMount, onDestroy } from "svelte";
 	import { GraphManager } from "$lib/graph-manager";
 	import FA2Layout from "graphology-layout-forceatlas2/worker";
 	import Tooltip from "./Tooltip.svelte";
@@ -15,6 +15,7 @@
 	let tooltipNode = -1;
 	let tooltipNodeNumNeighbors = [0, 0];
 	let camera: any;
+	let lastHash = "---";
 
 	onMount(() => {
 		import("sigma").then(({ default: Sigma }) => {
@@ -29,9 +30,40 @@
 			renderer.on("enterNode", ({ node }) => graphManager.highlightEdges(parseInt(node)));
 			renderer.on("leaveNode", () => graphManager.resetHighlight());
 
+			// On page load and hashchange
+			handleHashChange();
+			window.addEventListener("hashchange", handleHashChange);
+
 			zoomOut();
 		});
 	});
+
+	onDestroy(() => {
+		window.removeEventListener("hashchange", handleHashChange);
+	});
+
+	function handleHashChange() {
+		const hash = window.location.hash;
+		if (hash === lastHash) {
+			console.log("no change");
+			return;
+		}
+		const hashParts = hash.substring(1).split(",");
+		let updated = false;
+		if (hashParts.length === 3) {
+			const seed = parseInt(hashParts[0]);
+			const direction = hashParts[1] === "1" ? "up" : "down";
+			const currentNode = labels.indexOf(hashParts[2]); // Use lookup to speed up?
+			if (currentNode !== -1) {
+				updateSubGraph(currentNode, direction, seed);
+				updated = true;
+			}
+		}
+
+		if (!updated) {
+			updateSubGraphRandom();
+		}
+	}
 
 	function showTooltip(node: number, x: number, y: number) {
 		tooltipVisible = false;
@@ -62,8 +94,8 @@
 		tooltipVisible = false;
 	}
 
-	export function updateSubGraph(node: number, direction: "up" | "down") {
-		graphManager.updateSubGraph(node, direction);
+	export function updateSubGraph(node: number, direction: "up" | "down", seed: number = -1) {
+		graphManager.updateSubGraph(node, direction, seed);
 		zoomOut();
 	}
 
