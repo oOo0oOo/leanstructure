@@ -10,7 +10,9 @@
 <div class="tooltip" style="left: {x}px; top: {y}px;">
 	<div class="title">{content}</div>
 	<div class="content">
-		<a href="https://loogle.lean-lang.org/?q={content}&lucky=yes" target="_blank">Documentation</a><br /><br />
+		<a href="https://leanprover-community.github.io/mathlib4_docs/find/?pattern={content}#doc" target="_blank"
+			>Documentation</a
+		><br /><br />
 		<button on:click={onUpClick}>Foundation For {numNeighbors[0]}</button><br />
 		<button on:click={onDownClick}>Dependent On {numNeighbors[1]}</button>
 	</div>

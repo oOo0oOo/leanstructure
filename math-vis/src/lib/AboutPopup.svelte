@@ -10,15 +10,12 @@
 			<p>This application visualizes the dependencies of lean4 and mathlib4 proofs on a theorem/premise level.</p>
 			<b>Interaction</b>
 			<p>
-				Hovering over a node highlights all edges. Click a node to open a tooltip with more information. Links to
-				documentation use
-				<!-- prettier-ignore -->
-				<a href="https://loogle.lean-lang.org">loogle.lean-lang.org</a> (lucky). Thanks!
+				Hovering over a node highlights all edges. Click a node to open a tooltip with more information. Node colors
+				indicate node status: Gray = Only dependents, Green = No dependents, Blue = Intermediary.
 			</p>
-			<p>Node colors indicate node status: Gray = Only dependents, Green = No dependents, Blue = Intermediary.</p>
 			<p>
-				The total number of displayed nodes (500) and the number of neighbors are limited by random sampling.
-				Re-selecting might lead to a different graph.
+				The total number of displayed nodes is limited by bfs (500). Further the neighbors of each node are limited by
+				seeded random sampling (Initial: 100, Rest: 50). Re-selecting will randomize the seed.
 			</p>
 			<p>
 				Double-clicking a node will simplify its children (if possible): It removes all nodes that cannot be reached
@@ -29,8 +26,8 @@
 			<p>
 				Data processing was done in Python using the tracing functionality of
 				<!-- prettier-ignore -->
-				<a href="https://github.com/lean-dojo/LeanDojo">LeanDojo</a> based on lean4 v4.15.0-rc1. In total, there are 172104
-				nodes, 787646 edges in the dataset, resulting in an 8.5MB JSON file.
+				<a href="https://github.com/lean-dojo/LeanDojo">LeanDojo</a> based on lean4 v4.15.0-rc1. In total there are 172104
+				nodes and 787646 edges in the dataset, resulting in an 8.8MB JSON file.
 			</p>
 			<p>
 				The frontend was coded in TypeScript using Svelte and Sigma.js. Check out the public
@@ -38,10 +35,7 @@
 				<a href="https://github.com/oOo0oOo/leanstructure">GitHub Repo</a>.
 			</p>
 			<b>Acknowledgments</b>
-			<p>
-				Special thanks to the Lean community, <a href="https://loogle.lean-lang.org">loogle.lean-lang.org</a> and contributors
-				to LeanDojo and mathlib4.
-			</p>
+			<p>Special thanks to the Lean community and contributors to LeanDojo and mathlib4.</p>
 		</div>
 	</div>
 </div>
