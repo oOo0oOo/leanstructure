@@ -27,7 +27,7 @@
 				Data processing was done in Python using the tracing functionality of
 				<!-- prettier-ignore -->
 				<a href="https://github.com/lean-dojo/LeanDojo">LeanDojo</a> based on lean4 v4.15.0-rc1. In total there are 172104
-				nodes and 787646 edges in the dataset, resulting in an 8.8MB JSON file.
+				nodes and 787646 edges in the dataset, resulting in an 8.8MB JSON file (2.9MB zipped).
 			</p>
 			<p>
 				The frontend was coded in TypeScript using Svelte and Sigma.js. Check out the public

@@ -10,7 +10,6 @@ Check out the demo here: [https://oli.show/leanstructure](https://oli.show/leans
 
 - Hovering over a node highlights all edges.
 - Click a node to open a tooltip with more information.
-- Links to documentation use [loogle.lean-lang.org](https://loogle.lean-lang.org).
 - Search for nodes by name.
 - Node colors indicate node status.
 - Double-clicking a node will simplify its children.

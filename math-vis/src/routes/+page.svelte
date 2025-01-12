@@ -5,6 +5,7 @@
 	import InfoButton from "$lib/InfoButton.svelte";
 	import AboutPopup from "$lib/AboutPopup.svelte";
 	import { onMount } from "svelte";
+	import JSZip from 'jszip';
 
 	let graphManager: GraphManager;
 	let labels: string[] = [];
@@ -15,8 +16,15 @@
 	let showAbout: boolean = false;
 
 	onMount(async () => {
-		// Load graph data from JSON, assemble labels
-		const graphData = await fetch("data.json").then((res) => res.json());
+		// Load graph data from zip
+		const zip = await fetch("data.zip").then((res) => res.arrayBuffer()).then((buffer) => new JSZip().loadAsync(buffer));
+		const file = zip.file("data.json");
+		if (!file) {
+			throw new Error("data.json not found in the zip");
+		}
+		const data = await file.async("string");
+		const graphData = JSON.parse(data);
+
 		premises = graphData["premises"];
 		const tokens = graphData["tokens"];
 
