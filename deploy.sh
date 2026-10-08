@@ -1,10 +1,5 @@
 #!/bin/bash
-# Build the Lean structure visualisation and publish it to
-# https://oli.show/leanstructure/ via the box (replaces the FTP GitHub Action).
-# Usage: ./deploy.sh [--dry-run]
-set -euo pipefail
-cd "$(dirname "$0")/math-vis"
-yarn install --frozen-lockfile
-yarn build
-if [ "${1:-}" = --dry-run ]; then find build -type f | sort; echo "would run: box site leanstructure build"; exit 0; fi
-~/Code/infra/box site leanstructure build
+# Deploy the Lean structure map to https://oli.show/leanstructure/. The build steps and the target live in ~/Code/infra/apps.toml
+# (entry "leanstructure"); box checks the repo, builds, publishes a new release and
+# rolls back if the site doesn't answer. Usage: $0 [--dry-run] [--force]
+exec ~/Code/infra/box deploy leanstructure "$@"
